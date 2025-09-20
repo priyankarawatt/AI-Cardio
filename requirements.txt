@@ -1,0 +1,7 @@
+Flask
+flask-cors
+scikit-learn==1.6.1
+joblib
+pandas
+flask_mysqldb
+
