@@ -58,17 +58,38 @@ def ping():
 def predict():
     try:
         data = request.get_json()
+  
+        gender_map = {"Male": 1, "Female": 0}
+        yesno_map = {"Yes": 1, "No": 0}
+        level_map = {"Normal": 1, "Above Normal": 2, "Well Above Normal": 3}
+        
+        if "gender" in data:
+            data["gender"] = gender_map.get(data["gender"], data["gender"])
+        if "smoke" in data:
+            data["smoke"] = yesno_map.get(data["smoke"], data["smoke"])
+        if "alco" in data:
+            data["alco"] = yesno_map.get(data["alco"], data["alco"])
+        if "active" in data:
+            data["active"] = yesno_map.get(data["active"], data["active"])
+        if "cholesterol" in data:
+            data["cholesterol"] = level_map.get(data["cholesterol"], data["cholesterol"])
+        if "gluc" in data:
+            data["gluc"] = level_map.get(data["gluc"], data["gluc"])
+        
+        if "systolic_bp" in data:
+            data["ap_hi"] = data.pop("systolic_bp")
+        if "diastolic_bp" in data:
+            data["ap_lo"] = data.pop("diastolic_bp")
         
         for f in FEATURE_ORDER:
             if f not in data:
                 return jsonify({"error": f"Missing field: {f}"}), 400
         
         patient = pd.DataFrame([[data[f] for f in FEATURE_ORDER]], columns=FEATURE_ORDER)
-       
         patient_scaled = scaler.transform(patient)
-        pred = model.predict(patient_scaled)[0]
-        result = "Disease Risk" if pred == 1 else "No Disease Risk"
-        
+        prediction = model.predict(patient_scaled)[0]
+
+        result = "Disease Risk" if prediction == 1 else "No Disease Risk"
         
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -78,16 +99,16 @@ def predict():
         prediction, created_at)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
-    data["age"], data["gender"], data["height"], data["weight"],
-    data["ap_hi"], data["ap_lo"], data["cholesterol"], data["gluc"],
-    data["smoke"], data["alco"], data["active"],
-    result, datetime.datetime.utcnow().isoformat()
-))
-conn.commit()
-cursor.close()
-conn.close()
+            data["age"], data["gender"], data["height"], data["weight"],
+            data["ap_hi"], data["ap_lo"], data["cholesterol"], data["gluc"],
+            data["smoke"], data["alco"], data["active"],
+            result, datetime.datetime.utcnow().isoformat()
+        ))
+        conn.commit()
+        cursor.close()
+        conn.close()
 
-        return jsonify({"prediction": int(pred), "message": result})
+        return jsonify({"prediction": result})
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500

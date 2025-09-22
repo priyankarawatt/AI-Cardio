@@ -1,13 +1,13 @@
 {
   "age": 45,
-  "gender": 1,
+  "gender": "Male", 
   "height": 170,
-  "weight": 72,
-  "ap_hi": 130,
-  "ap_lo": 85,
-  "cholesterol": 2,
-  "gluc": 1,
-  "smoke": 0,
-  "alco": 0,
-  "active": 1
+  "weight": 70,
+  "systolic_bp": 120,
+  "diastolic_bp": 80,
+  "cholesterol": "Normal",        // Options: Normal / Above Normal / Well Above Normal
+  "glucose": "Normal",            // Options: Normal / Above Normal / Well Above Normal
+  "smoking": "No",                // Options: Yes / No
+  "alcohol_intake": "No",         // Options: Yes / No
+  "physically_active": "Yes"      // Options: Yes / No
 }

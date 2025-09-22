@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Predict API</title>
+</head>
+<body>
+  <h2>Heart Disease Prediction</h2>
+  <form id="predictForm">
+    <textarea id="jsonInput" rows="15" cols="60">
+{
+  "age": 45,
+  "gender": "Male",
+  "height": 170,
+  "weight": 70,
+  "ap_hi": 120,
+  "ap_lo": 80,
+  "cholesterol": 1,
+  "gluc": 1,
+  "smoke": 0,
+  "alco": 0,
+  "active": 1
+}
+    </textarea><br>
+    <button type="submit">Send to /predict</button>
+  </form>
+
+  <pre id="response"></pre>
+
+  <script>
+    document.getElementById("predictForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        let data = JSON.parse(document.getElementById("jsonInput").value);
+
+        // Convert gender from text to 1/0
+        if (data.gender) {
+          data.gender = data.gender.toLowerCase() === "male"? 1 : 0;
+        }
+
+        const res = await fetch("http://127.0.0.1:5000/predict", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+        document.getElementById("response").textContent = JSON.stringify(result, null, 2);
+
+      } catch(err) {
+        document.getElementById("response").textContent = "Invalid JSON or server error: " + err;
+      }
+    });
+  </script>
+</body>
+</html>
