@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login | Heart Risk Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
+</head>
+<body>
+
+<div class="auth-container">
+    <!-- LEFT BRAND PANEL -->
+    <div class="auth-brand">
+        <h1>AI Cardio</h1>
+        <p>
+            AI-powered cardiovascular risk assessment platform.<br>
+            Secure access to intelligent health insights.
+        </p>
+    </div>
+
+    <!-- RIGHT FORM PANEL -->
+    <div class="auth-card">
+        <h2>Login</h2>
+        <p class="subtitle">Create your account to get started</p>
+
+        <form method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+
+            <button type="submit">Login</button>
+        </form>
+
+        <div class="footer-text">
+             Don’t have an account?
+             <a href="/register">Create one</a>
+        </div>
+    
+</div>
+
+</body>
+</html>

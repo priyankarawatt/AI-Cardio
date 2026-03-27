@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Cardio | Dashboard</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard-layout">
+
+    <nav class="sidebar">
+        <div class="logo">
+            <i data-lucide="activity" color="#60a5fa" size="32"></i> AI Cardio
+        </div>
+        <ul>
+            <li><a href="{{ url_for('welcome') }}"><i data-lucide="home"></i> Home</a></li>
+            
+            <li class="active"><a href="/dashboard"><i data-lucide="layout-dashboard"></i> Dashboard</a></li>
+            
+            <li><a href="{{ url_for('index') }}"><i data-lucide="stethoscope"></i> Risk Analysis</a></li>
+            
+          <li><a href="/graph" class="card-btn"><i data-lucide="pie-chart"></i> Graph Report</a></li>      
+     <li><a href="/history"><i data-lucide="clock"></i> History</a></li>
+            <li><a href="/logout"><i data-lucide="log-out"></i> Logout</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        
+        <div class="dash-hero">
+            <div class="hero-text-content">
+                <h2 style="font-size: 24px; font-weight: 600; color: #94a3b8; margin-bottom: 5px;">Welcome Back, {{ username }} 👋</h2>
+                <h1>AI Cardio Overview</h1>
+                
+                <div class="hero-recommendation">
+                    <span style="color: #60a5fa;"><i data-lucide="activity" size="20" style="vertical-align: middle; margin-right: 8px;"></i>Status: Active Monitoring</span><br><br>
+                    <strong>Recommendation:</strong> Based on your profile, maintain an active lifestyle, monitor blood pressure regularly, and ensure a balanced diet to support heart health.
+                </div>
+            </div>
+
+            <div class="hero-images">
+                <svg class="ekg-line" viewBox="0 0 500 100" preserveAspectRatio="none">
+                    <path d="M0,50 L40,50 L55,20 L70,80 L85,50 L160,50 L175,10 L190,90 L205,50 L280,50 L295,30 L310,70 L325,50 L400,50 L415,20 L430,80 L445,50 L500,50"></path>
+                </svg>
+                
+                <img src="{{ url_for('static', filename='heart1.png') }}" class="hero-heart" alt="3D Heart">
+                <img src="{{ url_for('static', filename='robot doc.png') }}" class="hero-doctor" alt="Robot Doctor">
+            </div>
+        </div>
+
+        <div class="dash-stats-grid">
+            <div class="dash-stat-card">
+                <div>
+                    <div class="stat-header"><span>🩺 Last Risk Score</span> <i data-lucide="heart-pulse" color="#ef4444"></i></div>
+                    <div class="stat-value" style="color: #059669;">
+                        {% if last_record %}{{ last_record.prediction }}{% else %}No Data{% endif %}
+                    </div>
+                </div>
+                <div class="stat-suggestion" id="sugg-risk">✨ Maintain current lifestyle.</div>
+            </div>
+            
+            <div class="dash-stat-card">
+                <div>
+                    <div class="stat-header"><span>📅 Last Checked</span> <i data-lucide="calendar" color="#2563eb"></i></div>
+                    <div class="stat-value">
+                        {% if last_record %}{{ last_record.created_at }}{% else %}Today{% endif %}
+                    </div>
+                </div>
+                <div class="stat-suggestion" id="sugg-date">✨ System synced successfully.</div>
+            </div>
+            
+            <div class="dash-stat-card">
+                <div>
+                    <div class="stat-header"><span>🩸 Cholesterol</span> <i data-lucide="droplet" color="#f59e0b"></i></div>
+                    <div class="stat-value">
+                        {% if last_record and last_record.cholesterol > 1 %}Elevated{% else %}Normal{% endif %}
+                    </div>
+                </div>
+                <div class="stat-suggestion" id="sugg-chol">✨ Diet is working well.</div>
+            </div>
+            
+            <div class="dash-stat-card">
+                <div>
+                    <div class="stat-header"><span>🫀 Blood Pressure</span> <i data-lucide="activity" color="#8b5cf6"></i></div>
+                    <div class="stat-value">
+                        {% if last_record %}{{ last_record.ap_hi }}/{{ last_record.ap_lo }}{% else %}120/80{% endif %}
+                    </div>
+                </div>
+                <div class="stat-suggestion" id="sugg-bp">✨ Perfect resting BP.</div>
+            </div>
+        </div>
+
+        <div class="dash-bottom-row" style="display: flex; gap: 20px; align-items: stretch; margin-top: 20px;">
+            
+            <div class="dash-chart-card" style="flex: 1; min-width: 0;">
+                <img src="{{ url_for('static', filename='doctor_looking.png') }}" alt="Doctor Background" class="chart-doctor-img">
+                
+                <h3>Risk Factor Breakdown</h3>
+                <div class="chart-layout-flex">
+                    <div class="chart-container" style="position: relative; height: 350px; width: 100%;">
+                        <canvas id="riskChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dash-chat-card" style="flex: 1; min-width: 0; display: flex; flex-direction: column; height: 480px; overflow: hidden;">
+                <div class="chat-header">
+                    <img src="{{ url_for('static', filename='circle.jpeg') }}" alt="AI Doctor">
+                    <div>
+                        <div style="font-weight: 800; font-size: 18px;">AI Heart Doctor</div>
+                        <div style="font-size: 13px; color: #94a3b8; font-weight: 600;">Online</div>
+                    </div>
+                </div>
+                
+                <div class="chat-messages" id="chat-box" style="flex-grow: 1; overflow-y: auto; scroll-behavior: smooth; padding: 15px;">
+                    <div class="msg bot">Hello {{ username }}! I'm your AI Heart Assistant. How can I help with your data today?</div>
+                </div>
+                
+                <div style="font-size: 17px; color: #64748b; text-align: center; padding-top: 10px; background: #f8fafc; border-top: 1px solid #e2e8f0;">
+                    💡 <i>Note: This AI Doctor is trained on specific queries. Try asking these:</i>
+                </div>
+
+                <div id="chat-chips-container" style="display: flex; gap: 8px; overflow-x: auto; padding: 10px 15px 12px 15px; margin-bottom: 5px; background: #f8fafc; scrollbar-width: none;">
+                    <button type="button" id="chip-1" style="background-color: #dbeafe; color: #1e3a8a; border: 1px solid #bfdbfe; border-radius: 20px; padding: 8px 16px; font-size: 16px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: opacity 0.3s ease;">What is my score?</button>
+                    
+                    <button type="button" id="chip-2" style="background-color: #dbeafe; color: #1e3a8a; border: 1px solid #bfdbfe; border-radius: 20px; padding: 8px 16px; font-size: 16px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: opacity 0.3s ease;">Why am I at risk?</button>
+                    
+                    <button type="button" id="chip-3" style="background-color: #dbeafe; color: #1e3a8a; border: 1px solid #bfdbfe; border-radius: 20px; padding: 8px 16px; font-size: 16px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: opacity 0.3s ease;">How do I control it?</button>
+                </div>
+
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Type a message...">
+                    <button id="send-btn"><i data-lucide="send" size="20"></i></button>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        // --- SAFE DYNAMIC CHART LOGIC ---
+        const bpVal = {% if last_record %}{{ last_record.ap_hi }}{% else %}120{% endif %};
+        const cholVal = {% if last_record %}{{ last_record.cholesterol }}{% else %}1{% endif %};
+
+        const bpSize = bpVal > 130 ? 45 : 25;
+        const cholSize = cholVal > 1 ? 35 : 20;
+        const lifestyleSize = 25;
+        const geneticsSize = 15;
+
+        const ctx = document.getElementById('riskChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie', 
+            data: {
+                labels: ['Blood Pressure', 'Cholesterol', 'Lifestyle', 'Genetics'],
+                datasets: [{
+                    data: [bpSize, cholSize, lifestyleSize, geneticsSize],
+                    backgroundColor: ['#1e40af', '#38bdf8', '#fb923c', '#4ade80'], 
+                    borderWidth: 2, 
+                    borderColor: '#ffffff',
+                    hoverOffset: 15
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: { top: 10, right: 120, bottom: 10, left: 0 } 
+                },
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        align: 'start',
+                        labels: { 
+                            font: { family: 'Plus Jakarta Sans', size: 14, weight: '800' }, 
+                            padding: 15, 
+                            usePointStyle: true, 
+                            pointStyle: 'circle',
+                            generateLabels: function(chart) {
+                                const data = chart.data;
+                                return data.labels.map((label, index) => {
+                                    const sliceColor = data.datasets[0].backgroundColor[index];
+                                    return {
+                                        text: label,
+                                        fillStyle: sliceColor,
+                                        fontColor: sliceColor,
+                                        color: sliceColor,
+                                        index: index
+                                    };
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // --- DYNAMIC AI SUGGESTIONS LOGIC ---
+        const suggestions = {
+            risk: ["Maintain current lifestyle.", "Great job keeping risk low!", "Keep up the daily walks.", "All vitals look stable."],
+            date: ["Next checkup in 30 days.", "System synced successfully.", "Data is up to date.", "Real-time monitoring active."],
+            chol: ["Diet is working well.", "Avoid trans fats today.", "Omega-3 intake optimal.", "Normal range maintained."],
+            bp: ["Perfect resting BP.", "Stay hydrated today.", "Stress levels appear low.", "Sodium intake is good."]
+        };
+
+        function cycleSuggestions() {
+            const keys = ['risk', 'date', 'chol', 'bp'];
+            keys.forEach(key => {
+                const arr = suggestions[key];
+                const randomSugg = arr[Math.floor(Math.random() * arr.length)];
+                const el = document.getElementById('sugg-' + key);
+                
+                if(el) {
+                    el.style.opacity = 0;
+                    setTimeout(() => {
+                        el.innerText = "✨ " + randomSugg;
+                        el.style.opacity = 1;
+                    }, 400); 
+                }
+            });
+        }
+        setInterval(cycleSuggestions, 5000);
+
+        // --- DYNAMIC CHAT SUGGESTIONS (ROTATING CHIPS) ---
+        const chatQuestions = [
+            "What is my score?",
+            "Why am I at risk?",
+            "How do I control it?",
+            "What is my blood pressure?",
+            "What is my cholesterol?",
+            "Give me a diet plan.",
+            "What foods should I avoid?",
+            "Am I in danger?"
+        ];
+
+        function cycleChatChips() {
+            let shuffled = [...chatQuestions].sort(() => 0.5 - Math.random());
+            let selected = shuffled.slice(0, 3);
+            
+            for (let i = 0; i < 3; i++) {
+                let chip = document.getElementById('chip-' + (i + 1));
+                if (chip) {
+                    chip.style.opacity = 0;
+                    setTimeout(() => {
+                        chip.innerText = selected[i];
+                        chip.onclick = function() {
+                            document.getElementById('chat-input').value = selected[i];
+                            document.getElementById('send-btn').click();
+                        };
+                        chip.style.opacity = 1;
+                    }, 300);
+                }
+            }
+        }
+        
+        document.getElementById('chip-1').onclick = function() { document.getElementById('chat-input').value = this.innerText; document.getElementById('send-btn').click(); };
+        document.getElementById('chip-2').onclick = function() { document.getElementById('chat-input').value = this.innerText; document.getElementById('send-btn').click(); };
+        document.getElementById('chip-3').onclick = function() { document.getElementById('chat-input').value = this.innerText; document.getElementById('send-btn').click(); };
+
+        setInterval(cycleChatChips, 6000);
+
+        // --- CHAT INTERFACE LOGIC (Wired to Backend) ---
+        const chatBox = document.getElementById('chat-box');
+        const chatInput = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return; 
+
+            // Add User Message
+            const userDiv = document.createElement('div');
+            userDiv.className = 'msg user';
+            userDiv.innerText = text;
+            chatBox.appendChild(userDiv);
+            chatInput.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text })
+                });
+                
+                const result = await response.json();
+
+                // Add Bot Response
+                const botDiv = document.createElement('div');
+                botDiv.className = 'msg bot';
+                botDiv.innerHTML = result.reply; 
+                chatBox.appendChild(botDiv);
+            } catch (error) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'msg bot';
+                errorDiv.innerText = "Error: Could not reach the AI Doctor. Check your Python terminal!";
+                chatBox.appendChild(errorDiv);
+            }
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+    </script>
+</body>
+</html>

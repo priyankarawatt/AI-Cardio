@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Health Trend Graphs</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+background:#061a2e;
+color:white;
+font-family:Segoe UI;
+margin:0;
+}
+
+.navbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 40px;
+border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+.logo{
+color:#4fc3ff;
+font-weight:bold;
+letter-spacing:3px;
+}
+
+.back{
+border:1px solid #4fc3ff;
+padding:10px 20px;
+text-decoration:none;
+color:#4fc3ff;
+}
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:50px 20px;
+}
+
+h1{
+font-size:48px;
+font-weight:300;
+margin-bottom:10px;
+}
+
+.subtitle{
+color:#7fa6c6;
+margin-bottom:40px;
+}
+
+.card{
+background:#0c2947;
+padding:30px;
+border-radius:8px;
+margin-bottom:40px;
+border-top:3px solid #2e89ff;
+}
+
+.card h2{
+font-weight:400;
+margin-bottom:10px;
+}
+
+.card p{
+color:#8bb4d6;
+margin-bottom:20px;
+}
+
+canvas{
+background:#0c2947;
+}
+
+.stats{
+display:flex;
+justify-content:center;
+gap:80px;
+margin-top:30px;
+text-align:center;
+}
+
+.stats h3{
+font-size:40px;
+margin:0;
+}
+
+.risk{
+color:#ff4d4d;
+}
+
+.safe{
+color:#20c463;
+}
+
+.total{
+color:#4fc3ff;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+<div class="logo">● CARDIO AI</div>
+<a href="{{ url_for('dashboard') }}" class="back">← BACK</a>
+</div>
+
+<div class="container">
+
+<div class="subtitle">ANALYTICS</div>
+<h1>Health Trend<br>Graphs</h1>
+
+<p class="subtitle">
+Visual analysis of your cardiovascular health over time. Track risk changes,
+blood pressure history, and overall risk distribution.
+</p>
+
+<!-- GRAPH 1 -->
+
+<div class="card">
+
+<div style="color:#8bb4d6;letter-spacing:3px;font-size:12px">GRAPH 01</div>
+
+<h2>Risk Trend Over Time</h2>
+
+<p>
+Shows how your heart disease risk changed across predictions.
+<span style="color:red">1 = Risk</span> ·
+<span style="color:#20c463">0 = No Risk</span>
+</p>
+
+<canvas id="riskChart"></canvas>
+
+</div>
+
+
+<!-- GRAPH 2 -->
+
+<div class="card" style="border-top:3px solid #ff4d4d">
+
+<div style="color:#8bb4d6;letter-spacing:3px;font-size:12px">GRAPH 02</div>
+
+<h2>Blood Pressure Trend</h2>
+
+<p>
+Tracks systolic (upper) and diastolic (lower) blood pressure over time.
+</p>
+
+<canvas id="bpChart"></canvas>
+
+</div>
+
+
+<!-- GRAPH 3 -->
+
+<div class="card">
+
+<div style="color:#8bb4d6;letter-spacing:3px;font-size:12px">GRAPH 03</div>
+
+<h2>Risk Distribution</h2>
+
+<p>
+Proportion of risky vs safe predictions across all your entries.
+</p>
+
+<canvas id="pieChart"></canvas>
+
+<div class="stats">
+
+<div>
+<h3 class="risk">{{ results | sum }}</h3>
+<p>Risk Cases</p>
+
+<h3 class="safe">{{ results | length - results | sum }}</h3>
+<p>No Risk Cases</p>
+
+<h3 class="total">{{ results | length }}</h3>
+<p>Total Predictions</p>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+// Convert backend data safely
+const dates = {{ dates | tojson }};
+const results = {{ results | tojson }};
+
+// Risk Trend Graph
+new Chart(document.getElementById("riskChart"),{
+type:"line",
+data:{
+labels: dates,
+datasets:[{
+label:"Risk",
+data: results,
+borderColor:"#4fc3ff",
+backgroundColor:"rgba(79,195,255,0.15)",
+tension:0.4,
+fill:true,
+pointBackgroundColor:"#ff4d4d",
+pointRadius:6
+}]
+},
+options:{
+scales:{
+y:{
+min:0,
+max:1,
+ticks:{color:"white"}
+},
+x:{ticks:{color:"white"}}
+},
+plugins:{
+legend:{labels:{color:"white"}}
+}
+}
+});
+
+
+// Temporary Blood Pressure Graph (dummy until backend added)
+new Chart(document.getElementById("bpChart"),{
+type:"line",
+data:{
+labels: dates,
+datasets:[
+{
+label:"Systolic",
+data: results,
+borderColor:"#ff4d4d",
+backgroundColor:"rgba(255,77,77,0.15)",
+tension:0.4
+},
+{
+label:"Diastolic",
+data: results,
+borderColor:"#4fc3ff",
+backgroundColor:"rgba(79,195,255,0.15)",
+tension:0.4
+}
+]
+},
+options:{
+scales:{
+y:{ticks:{color:"white"}},
+x:{ticks:{color:"white"}}
+},
+plugins:{
+legend:{labels:{color:"white"}}
+}
+}
+});
+
+
+// Risk Distribution Pie
+new Chart(document.getElementById("pieChart"),{
+type:"doughnut",
+data:{
+labels:["Risk Detected","No Risk"],
+datasets:[{
+data:[results.reduce((a,b)=>a+b,0), results.length - results.reduce((a,b)=>a+b,0)],
+backgroundColor:["#ff4d4d","#20c463"]
+}]
+},
+options:{
+plugins:{
+legend:{
+labels:{color:"white"}
+}
+}
+}
+});
+
+</script>
+
+</body>
+</html>

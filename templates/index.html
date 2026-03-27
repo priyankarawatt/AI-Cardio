@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Cardio | Risk Analyzer</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="logo">
+            <i data-lucide="activity" color="#60a5fa" size="32"></i> AI Cardio
+        </div>
+        <ul>
+            <li><a href="#"><i data-lucide="home"></i> Home</a></li>
+            <li><a href="/dashboard"><i data-lucide="layout-dashboard"></i> Dashboard</a></li>
+            <li class="active"><a href="/"><i data-lucide="stethoscope"></i> Risk Analysis</a></li>
+            <li><a href="#"><i data-lucide="pie-chart"></i> Graph Reports</a></li>
+            <li><a href="/history"><i data-lucide="clock"></i> History</a></li>
+            <li><a href="/logout"><i data-lucide="log-out"></i> Logout</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <div class="glass-card">
+
+            <div class="assessment-header">
+                <div>
+                    <h1>AI Cardiovascular Risk Assessment</h1>
+                    <div class="progress-box">
+                        <div class="progress-meta">
+                            <span>Analysis Progress</span>
+                            <span id="progress-text">0/11 Fields</span>
+                        </div>
+                        <div class="progress-rail">
+                            <div id="progress-fill" class="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="icon-circle">
+                    <i data-lucide="heart" fill="currentColor"></i>
+                </div>
+            </div>
+
+            <div class="form-steps-nav">
+                <div class="step-tab active" id="tab-1" onclick="goToStep(1)">1. Personal Details</div>
+                <div class="step-tab" id="tab-2" onclick="goToStep(2)">2. Clinical Vitals</div>
+                <div class="step-tab" id="tab-3" onclick="goToStep(3)">3. Lifestyle & Habits</div>
+            </div>
+
+            <div id="step-1" class="step-content active">
+                <div class="form-fields-container">
+                    <div class="field-box">
+                        <label>Age (years)</label>
+                        <input type="number" id="age" min="1" max="150" placeholder="e.g. 45" oninput="updateProgress()">
+                    </div>
+                    <div class="field-box">
+                        <label>Gender</label>
+                        <select id="gender" onchange="updateProgress()">
+                            <option value="">Select Gender</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                        </select>
+                    </div>
+                    <div class="field-box">
+                        <label>Height (cm)</label>
+                        <input type="number" id="height" min="100" max="250" placeholder="e.g. 170" oninput="updateProgress()">
+                    </div>
+                    <div class="field-box">
+                        <label>Weight (kg)</label>
+                        <input type="number" id="weight" min="15" max="250" placeholder="e.g. 70" oninput="updateProgress()">
+                    </div>
+                </div>
+                <div class="step-buttons">
+                    <div></div> <button class="nav-btn-next" onclick="goToStep(2)">Next Step &rarr;</button>
+                </div>
+            </div>
+
+            <div id="step-2" class="step-content">
+                <div class="form-fields-container">
+                    <div class="field-box">
+                        <label>Systolic BP (mmHg)</label>
+                        <input type="number" id="systolic_bp" min="70" max="250" placeholder="e.g. 120" oninput="updateProgress()">
+                    </div>
+                    <div class="field-box">
+                        <label>Diastolic BP (mmHg)</label>
+                        <input type="number" id="diastolic_bp" min="40" max="150" placeholder="e.g. 80" oninput="updateProgress()">
+                    </div>
+                    <div class="field-box">
+                        <label>Cholesterol Level</label>
+                        <select id="cholesterol" onchange="updateProgress()">
+                            <option value="">Select Level</option>
+                            <option>Normal</option>
+                            <option>Above Normal</option>
+                            <option>Well Above Normal</option>
+                        </select>
+                    </div>
+                    <div class="field-box">
+                        <label>Glucose Level</label>
+                        <select id="gluc" onchange="updateProgress()">
+                            <option value="">Select Level</option>
+                            <option>Normal</option>
+                            <option>Above Normal</option>
+                            <option>Well Above Normal</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="step-buttons">
+                    <button class="nav-btn-prev" onclick="goToStep(1)">&larr; Previous</button>
+                    <button class="nav-btn-next" onclick="goToStep(3)">Next Step &rarr;</button>
+                </div>
+            </div>
+
+            <div id="step-3" class="step-content">
+                <div class="form-fields-container">
+                    <div class="field-box">
+                        <label>Physically Active?</label>
+                        <select id="active" onchange="updateProgress()">
+                            <option value="">Select Option</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select>
+                    </div>
+                    <div class="field-box">
+                        <label>Smokes?</label>
+                        <select id="smoke" onchange="updateProgress()">
+                            <option value="">Select Option</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select>
+                    </div>
+                    <div class="field-box">
+                        <label>Drinks Alcohol?</label>
+                        <select id="alco" onchange="updateProgress()">
+                            <option value="">Select Option</option>
+                            <option>No</option>
+                            <option>Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="medical-disclaimer">
+                    (This is for informational purposes only. For medical advice or a diagnosis, consult a professional.)
+                </div>
+
+                <div class="step-buttons">
+                    <button class="nav-btn-prev" onclick="goToStep(2)">&larr; Previous</button>
+                    <button class="analyze-btn" onclick="analyzeRisk()">Analyze Risk Factors</button>
+                </div>
+                <div id="result-message"></div>
+            </div>
+
+            <div class="floating-avatar">
+                <img src="{{ url_for('static', filename='circle.jpeg') }}" onerror="this.onerror=null; this.src='https://img.freepik.com/free-vector/doctor-character-background_1270-84.jpg';" alt="Doctor">
+            </div>
+
+        </div>
+    </main>
+
+<script>
+lucide.createIcons();
+
+function goToStep(step) {
+    document.querySelectorAll(".step-content").forEach(el => el.classList.remove("active"));
+    document.querySelectorAll(".step-tab").forEach(el => el.classList.remove("active"));
+    document.getElementById("step-" + step).classList.add("active");
+    document.getElementById("tab-" + step).classList.add("active");
+}
+
+function updateProgress() {
+    const ids = ["age","gender","height","weight","systolic_bp","diastolic_bp","cholesterol","gluc","active","smoke","alco"];
+    let filled = ids.filter(id => document.getElementById(id) && document.getElementById(id).value !== "").length;
+    let percent = (filled / 11) * 100;
+    document.getElementById("progress-fill").style.width = percent + "%";
+    document.getElementById("progress-text").innerText = filled + "/11 Fields";
+}
+
+function validateField(id, min, max) {
+    const input = document.getElementById(id);
+
+    input.addEventListener("input", function () {
+        const value = parseFloat(input.value);
+
+        if (isNaN(value) || value < min || value > max) {
+            input.style.border = "2px solid #ef4444"; // red
+        } else {
+            input.style.border = "2px solid #22c55e"; // green
+        }
+    });
+}
+
+function analyzeRisk() {
+    const data = {
+        age: document.getElementById('age').value, gender: document.getElementById('gender').value,
+        height: document.getElementById('height').value, weight: document.getElementById('weight').value,
+        systolic_bp: document.getElementById('systolic_bp').value, diastolic_bp: document.getElementById('diastolic_bp').value,
+        cholesterol: document.getElementById('cholesterol').value, gluc: document.getElementById('gluc').value,
+        smoke: document.getElementById('smoke').value, alco: document.getElementById('alco').value,
+        active: document.getElementById('active').value
+    };
+
+    fetch("/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    })
+.then(res => res.json())
+.then(result => {
+    const msg = document.getElementById("result-message");
+    msg.className = "";
+
+    if (result.error) {
+        msg.innerText = Array.isArray(result.error)
+            ? result.error.join(", ")
+            : result.error;
+        msg.classList.add("show-danger");
+        return;
+    }
+
+    msg.innerText = result.prediction;
+
+    if (result.prediction.includes("Risk")) {
+        msg.classList.add("show-danger");
+    } else {
+        msg.classList.add("show-success");
+    }
+})
+.catch(err => {
+    console.error("Fetch error:", err);
+});
+}
+document.addEventListener("DOMContentLoaded", function() {
+    validateField("age", 1, 150);
+    validateField("height", 100, 250);
+    validateField("weight", 15, 250);
+    validateField("systolic_bp", 70, 250);
+    validateField("diastolic_bp", 40, 150);
+});
+</script>
+
+</body>
+</html>

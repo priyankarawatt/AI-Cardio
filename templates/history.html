@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <meta charset="UTF-8">
+    <title>History | AI Cardio</title>
+    <style>
+        .history-wrapper {
+            margin-left: 260px;   
+            padding: 60px;
+            display: flex;
+            align-items: flex-start;
+            }
+
+        .history-card {
+            width: 100%;
+            max-width: 820px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            animation: fadeIn 0.6s ease;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .history-header h2 {
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background-image: url("{{ url_for('static', filename='history-img.png') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: 'Inter', system-ui, sans-serif;
+       }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        thead {
+            background: #f1f5f9;
+        }
+
+        th, td {
+            padding: 14px 12px;
+            text-align: left;
+        }
+
+        th {
+            font-weight: 600;
+            color: #334155;
+        }
+
+        tbody tr {
+            transition: background 0.25s ease;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .badge-risk {
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .badge-safe {
+            background: #dcfce7;
+            color: #166534;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 0;
+            color: #64748b;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+
+ <nav class="sidebar">
+     <div class="logo">
+        <i data-lucide="activity" color="#60a5fa" size="32"></i> AI Cardio
+     </div>
+     <ul>
+        <li><a href="#"><i data-lucide="home"></i> Home</a></li>
+        <li><a href="/dashboard"><i data-lucide="layout-dashboard"></i> Dashboard</a></li>
+        <li><a href="/"><i data-lucide="stethoscope"></i> Risk Analysis</a></li>
+        <li><a href="#"><i data-lucide="pie-chart"></i> Graph Reports</a></li>
+        <li class="active"><a href="/history"><i data-lucide="clock"></i> History</a></li>
+        <li><a href="/logout"><i data-lucide="log-out"></i> Logout</a></li>
+     </ul>
+ </nav>
+
+<div class="history-wrapper">
+    <div class="history-card">
+
+        <div class="history-header">
+            <h2>Prediction History</h2>
+            <span>Logged in as <strong>{{ username }}</strong></span>
+        </div>
+
+        {% if records|length == 0 %}
+            <div class="empty-state">
+                <p>No prediction records found.</p>
+                <p>Run a risk analysis to start tracking your heart health.</p>
+            </div>
+        {% else %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Age</th>
+                    <th>BP (Sys/Dia)</th>
+                    <th>Cholesterol</th>
+                    <th>Glucose</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in records %}
+                <tr>
+                    <td>{{ r.created_at }}</td>
+                    <td>{{ r.age }}</td>
+                    <td>{{ r.ap_hi }}/{{ r.ap_lo }}</td>
+                    <td>{% if r.cholesterol == 1 %}
+                            Normal
+                        {% elif r.cholesterol == 2 %}
+                            Above Normal
+                        {% else %}
+                            Well Above Normal
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if r.gluc == 1 %}
+                            Normal
+                        {% elif r.gluc == 2 %}
+                            Above Normal
+                        {% else %}
+                            Well Above Normal
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if r.prediction == "Risk of Heart Disease" %}
+                            <span class="badge-risk">High Risk</span>
+                        {% else %}
+                            <span class="badge-safe">No Risk</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+
+    </div>
+</div>
+
+</body>
+</html>

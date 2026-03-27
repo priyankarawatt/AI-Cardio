@@ -1,0 +1,177 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Cardio AI</title>
+
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(to right, #071a2f, #0b2a4a);
+        color: white;
+        overflow: hidden;
+      }
+
+      /* NAVBAR */
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 60px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .logo {
+        font-weight: bold;
+        letter-spacing: 3px;
+      }
+
+      .logo span {
+        color: #4fc3ff;
+      }
+
+      .logout {
+        border: 1px solid #ff4d4d;
+        padding: 8px 20px;
+        text-decoration: none;
+        color: #ff4d4d;
+        border-radius: 4px;
+        transition: 0.3s;
+      }
+
+      .logout:hover {
+        background: #ff4d4d;
+        color: white;
+      }
+
+      /* MAIN SECTION */
+      .main {
+        text-align: center;
+        margin-top: 80px;
+        padding: 0 20px;
+      }
+
+      .badge {
+        display: inline-block;
+        border: 1px solid #ff4d4d;
+        padding: 6px 20px;
+        font-size: 12px;
+        letter-spacing: 2px;
+        margin-bottom: 30px;
+      }
+
+      h1 {
+        font-family: "Times New Roman", serif;
+        font-size: 60px;
+        font-weight: 400;
+        margin: 10px 0;
+      }
+
+      .blue {
+        color: #4fc3ff;
+        font-style: italic;
+      }
+
+      .desc {
+        max-width: 800px;
+        margin: 30px auto;
+        font-size: 18px;
+        color: #b0c4de;
+        line-height: 1.6;
+      }
+
+      .buttons {
+        margin-top: 40px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(to right, #3a7bd5, #2a5db0);
+        padding: 18px 40px;
+        text-decoration: none;
+        color: white;
+        font-size: 18px;
+        margin-right: 20px;
+        display: inline-block;
+        border-radius: 4px;
+      }
+
+      .btn-secondary {
+        border: 1px solid #ff4d4d;
+        padding: 18px 40px;
+        text-decoration: none;
+        color: #ff4d4d;
+        font-size: 18px;
+        display: inline-block;
+        border-radius: 4px;
+      }
+
+      .btn-secondary:hover {
+        background: #ff4d4d;
+        color: white;
+      }
+
+      /* ECG Animation */
+      .ecg-container {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    overflow: hidden;
+    pointer-events: none;   /* THIS LINE FIXES IT */
+}
+      
+    .ecg-line {
+            width: 200%;
+            height: 120px;
+            background: url('data:image/svg+xml;utf8,\
+            <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="120">\
+            <polyline points="0,60 100,60 120,40 140,80 160,60 260,60 280,45 300,85 320,60 420,60 440,40 460,80 480,60 580,60 600,45 620,85 640,60 740,60 760,40 780,80 800,60 900,60 920,45 940,85 960,60 1100,60 1200,60" \
+            stroke="%234fc3ff" stroke-width="3" fill="none"/>\
+            </svg>');
+            background-repeat: repeat-x;
+            animation: moveECG 4s linear infinite;
+        }
+
+      @keyframes moveECG {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-600px);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="navbar">
+      <div class="logo">🔴 <span>AI</span> CARDIO</div>
+      <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+    </div>
+
+    <div class="main">
+      <div class="badge">AI-POWERED CARDIOVASCULAR ANALYSIS</div>
+
+      <h1>Know Your</h1>
+      <h1 class="blue">Heart's Risk</h1>
+      <h1>Before It's Too Late</h1>
+
+      <div class="desc">
+        This AI-powered system analyzes key health parameters and lifestyle
+        indicators to estimate potential cardiovascular risk.
+      </div>
+
+      <div class="buttons">
+        <a href="{{ url_for('dashboard') }}" class="btn-primary"
+          >Go to Dashboard</a
+        >
+        <a href="{{ url_for('index') }}" class="btn-secondary"
+          >Start Analysis</a
+        >
+      </div>
+    </div>
+
+    <div class="ecg-container">
+      <div class="ecg-line"></div>
+    </div>
+  </body>
+</html>

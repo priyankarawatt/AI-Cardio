@@ -1,0 +1,125 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f6fa;
+}
+
+.layout {
+    display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    background: linear-gradient(180deg, #0f3d66, #1b6ca8);
+    color: white;
+    padding: 20px;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 40px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin: 18px 0;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+.sidebar ul li.active a {
+    font-weight: bold;
+}
+
+/* Main */
+.main-content {
+    flex: 1;
+    padding: 40px;
+}
+
+.subtitle {
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.card {
+    display: flex;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+/* Left Panel */
+.info-panel {
+    width: 35%;
+    background: linear-gradient(180deg, #1b6ca8, #0f3d66);
+    color: white;
+    padding: 40px;
+    text-align: center;
+}
+
+.info-panel p {
+    font-style: italic;
+    margin-top: 20px;
+}
+
+.shield {
+    font-size: 40px;
+}
+
+/* Form */
+.form-panel {
+    width: 65%;
+    padding: 40px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+label {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.analyze-btn {
+    margin-top: 30px;
+    padding: 12px;
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    background: #1b6ca8;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.analyze-btn:hover {
+    background: #0f3d66;
+}
+
+.prediction {
+    margin-top: 20px;
+    font-weight: bold;
+}

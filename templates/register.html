@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register | AI Cardio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
+</head>
+<body>
+
+<div class="auth-container">
+    <div class="auth-brand">
+        <h1>AI Cardio</h1>
+        <p>
+            AI-powered cardiovascular risk assessment platform.<br>
+            Secure access to intelligent health insights.
+        </p>
+    </div>
+
+    <div class="auth-card">
+        <h2>Register</h2>
+        <p class="subtitle">Create your account to get started</p>
+
+        <form method="POST">
+            <label for="username">Username</label>
+            <input type="text" name="username" required>
+
+            <label for="password">Password</label>
+            <input type="password" name="password" required>
+
+            <label for="confirm">Confirm Password</label>
+            <input type="password" name="confirm" required>
+
+            <button type="submit">Create Account</button>
+        </form>
+
+        <div class="footer-text">
+             Already have an account?
+             <a href="/login">Login here</a>
+        </div>    
+
+</div>
+
+</body>
+</html>
